@@ -19,7 +19,11 @@ class SubObject
     
   geometry: -> new THREE.Cube(10, 10, 10)
   material: -> new THREE.MeshBasicMaterial(color: 0xff00ff)
-  mesh: ->     new THREE.Mesh(@geometry(), @material())
+  mesh: ->
+    m = new THREE.Mesh(@geometry(), @material())
+    m.owner = this
+    return m
+    
   onTouch: null # If this is a function the obect is interactive
 
 
@@ -42,4 +46,4 @@ class Wall extends SubObject
     return mesh
   
   onTouch: ->
-    @scene.removeChild @mesh
+    @mesh.position.addSelf @mesh.position.clone().normalize().multiplyScalar(10)

@@ -34,7 +34,10 @@
       });
     };
     SubObject.prototype.mesh = function() {
-      return new THREE.Mesh(this.geometry(), this.material());
+      var m;
+      m = new THREE.Mesh(this.geometry(), this.material());
+      m.owner = this;
+      return m;
     };
     SubObject.prototype.onTouch = null;
     return SubObject;
@@ -74,7 +77,7 @@
       return mesh;
     };
     Wall.prototype.onTouch = function() {
-      return this.scene.removeChild(this.mesh);
+      return this.mesh.position.addSelf(this.mesh.position.clone().normalize().multiplyScalar(10));
     };
     return Wall;
   })();
