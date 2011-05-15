@@ -17,7 +17,7 @@
       this.activatedWalls = [];
     }
     Test1.prototype.createSubObjects = function() {
-      return [new Wall(this.scene, v(200, 200, 20), v(0, 0, 110), 0), new Wall(this.scene, v(200, 200, 20), v(0, 0, -110), 3), new Wall(this.scene, v(200, 20, 200), v(0, 110, 0), 4), new Wall(this.scene, v(200, 20, 200), v(0, -110, 0), 2), new Wall(this.scene, v(20, 200, 200), v(110, 0, 0), 1), new Wall(this.scene, v(20, 200, 200), v(-110, 0, 0), 5)];
+      return [new Wall(this.scene, v(200, 200, 20), v(0, 0, 110), 0), new Wall(this.scene, v(200, 200, 20), v(0, 0, -110), 3), new Wall(this.scene, v(200, 20, 200), v(0, 110, 0), 5), new Wall(this.scene, v(200, 20, 200), v(0, -110, 0), 2), new Wall(this.scene, v(20, 200, 200), v(110, 0, 0), 1), new Wall(this.scene, v(20, 200, 200), v(-110, 0, 0), 4)];
     };
     Test1.prototype.deactivateOtherWalls = function(wall) {
       var obj, _i, _len, _ref, _results;
@@ -77,10 +77,10 @@
         color: 0x444444,
         shading: THREE.FlatShading
       }), new THREE.MeshLambertMaterial({
-        color: 0x888888,
+        color: 0x555555,
         shading: THREE.FlatShading
       }), new THREE.MeshLambertMaterial({
-        color: 0xbbbbbb,
+        color: 0x888888,
         shading: THREE.FlatShading
       }), new THREE.MeshLambertMaterial({
         color: 0xffffff,
