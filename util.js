@@ -27,29 +27,66 @@
   Math.atan2D = function(y, x) {
     return Math.rad2deg(Math.atan2(y, x));
   };
+  Math.between = function(a, b, progress) {
+    if (progress == null) {
+      progress = 0.5;
+    }
+    return a * (1 - progress) + b * progress;
+  };
   THREE.Vector3.prototype.rotateX = function(deg) {
-    var y, z;
-    y = this.y, z = this.z;
-    this.y = y * Math.cosD(deg) - z * Math.sinD(deg);
-    this.z = y * Math.sinD(deg) + z * Math.cosD(deg);
-    return this;
+    return this.set(this.x, this.y * Math.cosD(deg) - this.z * Math.sinD(deg), this.y * Math.sinD(deg) + this.z * Math.cosD(deg));
   };
   THREE.Vector3.prototype.rotateY = function(deg) {
-    var x, z;
-    x = this.x, z = this.z;
-    this.x = z * Math.sinD(deg) + x * Math.cosD(deg);
-    this.z = z * Math.cosD(deg) - x * Math.sinD(deg);
-    return this;
+    return this.set(this.z * Math.sinD(deg) + this.x * Math.cosD(deg), this.y, this.z * Math.cosD(deg) - this.x * Math.sinD(deg));
   };
   THREE.Vector3.prototype.rotateZ = function(deg) {
-    var x, y;
-    x = this.x, y = this.y;
-    this.x = x * Math.cosD(deg) - y * Math.sinD(deg);
-    this.y = x * Math.sinD(deg) + y * Math.cosD(deg);
-    return this;
+    return this.set(this.x * Math.cosD(deg) - this.y * Math.sinD(deg), this.x * Math.sinD(deg) + this.y * Math.cosD(deg), this.z);
+  };
+  THREE.Vector3.prototype.setBetween = function(a, b, progress) {
+    if (progress == null) {
+      progress = 0.5;
+    }
+    return this.set(Math.between(a.x, b.x, progress), Math.between(a.y, b.y, progress), Math.between(a.z, b.z, progress));
   };
   this.Animator = (function() {
-    function Animator() {}
+    Animator.linear = function(progress) {
+      return progress;
+    };
+    Animator.ease = function(progress) {
+      return (1 - Math.cos(progress * Math.PI)) / 2;
+    };
+    Animator.easein = function(progress) {
+      return 1 - Math.cos(progress * Math.PI / 2);
+    };
+    Animator.easeout = function(progress) {
+      return Math.cos((progress - 1) * Math.PI / 2);
+    };
+    function Animator() {
+      var args, callback, options, _i;
+      args = 2 <= arguments.length ? __slice.call(arguments, 0, _i = arguments.length - 1) : (_i = 0, []), callback = arguments[_i++];
+      this.callback = callback;
+      this.duration = args[0];
+      options = args[1] || {};
+      this.curve = options.curve || Animator.ease;
+      Game.animators.push(this);
+      this.start = Game.lastFrameAt;
+      this.elapsed = 0;
+      this.expired = false;
+    }
+    Animator.prototype.progress = function() {
+      var result;
+      result = this.elapsed / this.duration;
+      this.expired = result >= 1;
+      if (result > 1) {
+        return 1;
+      } else {
+        return result;
+      }
+    };
+    Animator.prototype.update = function() {
+      this.elapsed = Game.lastFrameAt - this.start;
+      return this.callback(this.curve(this.progress()));
+    };
     return Animator;
   })();
 }).call(this);

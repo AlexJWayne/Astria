@@ -1,5 +1,11 @@
 Game =
   init: ->
+    # Timing all in (ms)
+    @startedAt          = @now()
+    @lastFrameAt        = @now()
+    @deltaTime          = 0
+    @elapsedTime        = 0
+    
     # Camera
     @camera = new OrbitCamera(75, window.innerWidth / window.innerHeight, 1, 10000)    
     @cameraOrbiting = off
@@ -17,6 +23,9 @@ Game =
     @renderer = new THREE.CanvasRenderer()
     @renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(@renderer.domElement)
+    
+    # Animators array
+    @animators = []
     
     # Stats
     @stats = new Stats()
@@ -50,7 +59,10 @@ Game =
     
     document.onmouseup = =>
       @cameraOrbiting = off      
-      
+  
+  # Return the timestamp for now, in seconds.
+  now: -> new Date().getTime() / 1000
+  
   # Animation callback
   animate: ->
     requestAnimationFrame(@animate)
@@ -58,8 +70,26 @@ Game =
   
   # Render this frame
   render: ->
+    
+    # Update camera
     @camera.updateOrbit()
+    
+    # Animators
+    @animators = _.reject @animators, (animator) ->
+      animator.update()
+      animator.expired
+    
+    
+    # Render Scene
     @renderer.render(@scene, @camera)
+    
+    # Update timings
+    now = @now()
+    @deltaTime   = now - @lastFrameAt
+    @elapsedTime = now - @startedAt
+    @lastFrameAt = now
+    
+    # Update stats
     @stats.update()
 
 # Bind all methods in context of the singleton Game object

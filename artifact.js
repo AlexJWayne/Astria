@@ -9,8 +9,14 @@
   };
   this.Artifact = (function() {
     function Artifact(scene) {
+      var obj, _i, _len, _ref;
       this.scene = scene;
       this.subObjects = this.createSubObjects();
+      _ref = this.subObjects;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        obj = _ref[_i];
+        obj.artifact = this;
+      }
     }
     Artifact.prototype.createSubObjects = function() {
       return [new SubObject(this.scene)];

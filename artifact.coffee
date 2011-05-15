@@ -2,6 +2,8 @@
 class @Artifact
   constructor: (@scene) ->
     @subObjects = @createSubObjects()
+    for obj in @subObjects
+      obj.artifact = this
   
   # Override to return an array of Artifact.SubObject instances that compose the artifact
   createSubObjects: ->

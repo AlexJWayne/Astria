@@ -4,6 +4,10 @@
   Game = {
     init: function() {
       var light;
+      this.startedAt = this.now();
+      this.lastFrameAt = this.now();
+      this.deltaTime = 0;
+      this.elapsedTime = 0;
       this.camera = new OrbitCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
       this.cameraOrbiting = false;
       this.scene = new THREE.Scene();
@@ -14,6 +18,7 @@
       this.renderer = new THREE.CanvasRenderer();
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(this.renderer.domElement);
+      this.animators = [];
       this.stats = new Stats();
       this.stats.domElement.style.position = 'absolute';
       this.stats.domElement.style.left = '5px';
@@ -43,13 +48,25 @@
         return this.cameraOrbiting = false;
       }, this);
     },
+    now: function() {
+      return new Date().getTime() / 1000;
+    },
     animate: function() {
       requestAnimationFrame(this.animate);
       return this.render();
     },
     render: function() {
+      var now;
       this.camera.updateOrbit();
+      this.animators = _.reject(this.animators, function(animator) {
+        animator.update();
+        return animator.expired;
+      });
       this.renderer.render(this.scene, this.camera);
+      now = this.now();
+      this.deltaTime = now - this.lastFrameAt;
+      this.elapsedTime = now - this.startedAt;
+      this.lastFrameAt = now;
       return this.stats.update();
     }
   };
