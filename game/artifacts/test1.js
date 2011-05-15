@@ -17,7 +17,7 @@
       this.activatedWalls = [];
     }
     Test1.prototype.createSubObjects = function() {
-      return [new Wall(this.scene, v(200, 200, 20), v(0, 0, 160), 0), new Wall(this.scene, v(200, 200, 20), v(0, 0, -160), 3), new Wall(this.scene, v(200, 20, 200), v(0, 160, 0), 4), new Wall(this.scene, v(200, 20, 200), v(0, -160, 0), 2), new Wall(this.scene, v(20, 200, 200), v(160, 0, 0), 1), new Wall(this.scene, v(20, 200, 200), v(-160, 0, 0), 5)];
+      return [new Wall(this.scene, v(200, 200, 20), v(0, 0, 110), 0), new Wall(this.scene, v(200, 200, 20), v(0, 0, -110), 3), new Wall(this.scene, v(200, 20, 200), v(0, 110, 0), 4), new Wall(this.scene, v(200, 20, 200), v(0, -110, 0), 2), new Wall(this.scene, v(20, 200, 200), v(110, 0, 0), 1), new Wall(this.scene, v(20, 200, 200), v(-110, 0, 0), 5)];
     };
     Test1.prototype.deactivateOtherWalls = function(wall) {
       var obj, _i, _len, _ref, _results;
@@ -71,16 +71,16 @@
         color: 0x000000,
         shading: THREE.FlatShading
       }), new THREE.MeshLambertMaterial({
-        color: 0x333333,
+        color: 0x2a2a2a,
         shading: THREE.FlatShading
       }), new THREE.MeshLambertMaterial({
-        color: 0x666666,
+        color: 0x444444,
         shading: THREE.FlatShading
       }), new THREE.MeshLambertMaterial({
-        color: 0x999999,
+        color: 0x888888,
         shading: THREE.FlatShading
       }), new THREE.MeshLambertMaterial({
-        color: 0xcccccc,
+        color: 0xbbbbbb,
         shading: THREE.FlatShading
       }), new THREE.MeshLambertMaterial({
         color: 0xffffff,
@@ -111,7 +111,7 @@
       var curve, goal, start;
       this.popped = outward;
       start = this.position.clone();
-      goal = this.position.clone().addSelf(this.position.clone().normalize().multiplyScalar(outward ? -50 : 50));
+      goal = this.position.clone().addSelf(this.position.clone().normalize().multiplyScalar(outward ? 50 : -50));
       curve = outward ? Animator.easeout : Animator.easein;
       return this.animator = new Animator(0.5, {
         curve: Animator.easeout
