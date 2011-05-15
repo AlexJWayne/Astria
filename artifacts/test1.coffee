@@ -11,7 +11,7 @@ class Artifact.Test1 extends Artifact
   
   activateWall: (wall) ->
     # Abort if we are still animating
-    return if (currentAnimator = @poppedWall?.animator) && !currentAnimator.expired
+    return if @poppedWall?.animator.animating
     
     if @poppedWall is wall
       @poppedWall.animate off

@@ -63,10 +63,13 @@ class @Animator
     @start = Game.lastFrameAt
     @elapsed = 0
     @expired = no
+    @alive   = yes
   
   progress: ->
     result = @elapsed / @duration
     @expired = result >= 1
+    @animating = !@expired
+    
     if result > 1 then 1 else result
   
   update: ->
