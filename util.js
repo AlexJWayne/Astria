@@ -48,4 +48,8 @@
     this.y = x * Math.sinD(deg) + y * Math.cosD(deg);
     return this;
   };
+  this.Animator = (function() {
+    function Animator() {}
+    return Animator;
+  })();
 }).call(this);

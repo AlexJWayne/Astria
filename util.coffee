@@ -1,6 +1,8 @@
+# Vector3 shorthand
 @v = (args...) ->
   new THREE.Vector3 args...
 
+# Degree math helpers
 Math.deg2rad = (deg) -> deg * Math.PI / 180
 Math.rad2deg = (rad) -> rad * 180 / Math.PI
 
@@ -9,6 +11,7 @@ Math.cosD = (deg) -> Math.cos Math.deg2rad(deg)
 Math.tanD = (deg) -> Math.tan Math.deg2rad(deg)
 Math.atan2D = (y, x) -> Math.rad2deg Math.atan2(y, x)
 
+# Vector3 extensions
 THREE.Vector3::rotateX = (deg) ->
   { y, z } = this
   @y = y * Math.cosD(deg) - z * Math.sinD(deg)
@@ -26,4 +29,8 @@ THREE.Vector3::rotateZ = (deg) ->
   @x = x * Math.cosD(deg) - y * Math.sinD(deg)
   @y = x * Math.sinD(deg) + y * Math.cosD(deg)
   return this
-  
+
+
+# Animator
+class @Animator
+  constructor: () ->

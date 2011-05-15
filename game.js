@@ -1,9 +1,9 @@
 (function() {
+  var Game, func, method;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  this.Game = (function() {
-    function Game() {
-      this.render = __bind(this.render, this);;
-      this.animate = __bind(this.animate, this);;      var light;
+  Game = {
+    init: function() {
+      var light;
       this.camera = new OrbitCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
       this.cameraOrbiting = false;
       this.scene = new THREE.Scene();
@@ -14,36 +14,48 @@
       this.renderer = new THREE.CanvasRenderer();
       this.renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(this.renderer.domElement);
+      this.stats = new Stats();
+      this.stats.domElement.style.position = 'absolute';
+      this.stats.domElement.style.left = '5px';
+      this.stats.domElement.style.top = '5px';
+      document.body.appendChild(this.stats.domElement);
+      this.bindMouseEvents();
       this.artifact = new Artifact.Test1(this.scene);
-      __bind(function() {
-        document.onmousemove = __bind(function(event) {
-          if (this.cameraOrbiting) {
-            return this.camera.move(event);
-          }
-        }, this);
-        document.onmousedown = __bind(function(event) {
-          var hits, _ref;
-          if ((hits = this.camera.castMouse(this.scene, event)).length > 0) {
-            return (_ref = hits[0].object) != null ? typeof _ref.onTouch == "function" ? _ref.onTouch() : void 0 : void 0;
-          } else {
-            this.cameraOrbiting = true;
-            this.camera.last.x = event.clientX;
-            return this.camera.last.y = event.clientY;
-          }
-        }, this);
-        return document.onmouseup = __bind(function() {
-          return this.cameraOrbiting = false;
-        }, this);
-      }, this)();
-    }
-    Game.prototype.animate = function() {
+      return this.animate();
+    },
+    bindMouseEvents: function() {
+      document.onmousemove = __bind(function(event) {
+        if (this.cameraOrbiting) {
+          return this.camera.move(event);
+        }
+      }, this);
+      document.onmousedown = __bind(function(event) {
+        var hits, _ref;
+        if ((hits = this.camera.castMouse(this.scene, event)).length > 0) {
+          return (_ref = hits[0].object) != null ? typeof _ref.onTouch == "function" ? _ref.onTouch() : void 0 : void 0;
+        } else {
+          this.cameraOrbiting = true;
+          this.camera.last.x = event.clientX;
+          return this.camera.last.y = event.clientY;
+        }
+      }, this);
+      return document.onmouseup = __bind(function() {
+        return this.cameraOrbiting = false;
+      }, this);
+    },
+    animate: function() {
       requestAnimationFrame(this.animate);
       return this.render();
-    };
-    Game.prototype.render = function() {
+    },
+    render: function() {
       this.camera.updateOrbit();
-      return this.renderer.render(this.scene, this.camera);
-    };
-    return Game;
-  })();
+      this.renderer.render(this.scene, this.camera);
+      return this.stats.update();
+    }
+  };
+  for (method in Game) {
+    func = Game[method];
+    Game[method] = _.bind(func, Game);
+  }
+  window.Game = Game;
 }).call(this);

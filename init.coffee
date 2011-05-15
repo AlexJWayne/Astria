@@ -2,6 +2,7 @@ head.js(
   # libs
   'lib/three.js'
   'lib/RequestAnimationFrame.js'
+  'lib/stats.js'
   'lib/underscore.js'
   
   # Support
@@ -17,6 +18,6 @@ head.js(
   
   # All loaded callback
   ->
-    Game.game = new Game()
-    Game.game.animate()
+    Game.init()
+    Game.animate()
 )
