@@ -8,7 +8,8 @@ class @Artifact
   # Override to return an array of Artifact.SubObject instances that compose the artifact
   createSubObjects: ->
     [new SubObject(@scene)]
-    
+
+
 # Artifacts are composed of Artifact.SubObject instances
 class @Artifact.SubObject extends THREE.Mesh
   constructor: (@scene, options = {}) ->

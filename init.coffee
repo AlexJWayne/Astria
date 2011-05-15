@@ -6,15 +6,17 @@ head.js(
   'lib/underscore.js'
   
   # Support
-  'util.js'
-  'orbit_camera.js'
+  'support/math.js'
+  'support/animator.js'
+  'support/orbit_camera.js'
+  'support/vector3.js'
   
   # Astria Core
-  'game.js'
-  'artifact.js'
+  'game/game.js'
+  'game/artifact.js'
   
   # Levels
-  'artifacts/test1.js'
+  'game/artifacts/test1.js'
   
   # All loaded callback
   ->
