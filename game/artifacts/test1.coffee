@@ -14,17 +14,14 @@ class Artifact.Test1 extends Artifact
     ]
   
   deactivateOtherWalls: (wall) ->
-    for obj in @subObjects
-      obj.animate(off) if obj.popped and obj isnt wall
+    for obj in @subObjects when obj.popped && obj isnt wall
+      obj.animator?.expire()
+      obj.animate(no)
   
   activateWall: (wall) ->
-    # Abort if we are still animating
-    for obj in @subObjects
-      return if wall.animator?.animating
-    
     if wall.order == @activatedWalls.length
       @activatedWalls.push(wall)
-      wall.animate(on) unless wall.popped
+      wall.animate(yes) unless wall.popped
       @deactivateOtherWalls(wall) if @activatedWalls.length == 1
     
     else
@@ -39,7 +36,7 @@ class Artifact.Test1 extends Artifact
         @activatedWalls = []
         setTimeout =>
           @deactivateOtherWalls()
-        , 500
+        , 250
       , 500
       
       
@@ -63,6 +60,11 @@ class Wall extends Artifact.SubObject
     super @scene, options
     @position.copy(position)
     @popped = no
+    
+    @targets =
+      open:   @position.clone().addSelf(@position.clone().normalize().multiplyScalar 75)
+      closed: @position.clone()
+    
   
   geometry: -> new THREE.Cube(@size.x, @size.y, @size.z)
   material: -> mats[@order]
@@ -74,13 +76,22 @@ class Wall extends Artifact.SubObject
     # Save the activated sate
     @popped = outward
     
-    # Setup the activae and inactive positions
-    start = @position.clone()
-    goal  = @position.clone().addSelf(@position.clone().normalize().multiplyScalar(if outward then 50 else -50))
-    curve = if outward then Animator.easeout else Animator.easein
+    # Fast out, slow/sloppy in
+    duration = if outward
+      0.3
+    else
+      0.6 + Math.random()*0.6
+    
+    # Setup the active and inactive positions
+    startPos = @position.clone()
+    endPos   = if outward then @targets.open else @targets.closed
+    
+    # Move faster near the cube
+    options = curve: if outward then Animator.easeout else Animator.easein
     
     # Animate
-    @animator = new Animator 0.5, curve: Animator.easeout, (progress) =>
-      @position.setBetween(start, goal, progress)
+    @animator = new Animator(duration, options, (progress) =>
+      @position.setBetween(startPos, endPos, progress)
+    )
     
     

@@ -20,24 +20,21 @@
       return [new Wall(this.scene, v(200, 200, 20), v(0, 0, 110), 0), new Wall(this.scene, v(200, 200, 20), v(0, 0, -110), 3), new Wall(this.scene, v(200, 20, 200), v(0, 110, 0), 5), new Wall(this.scene, v(200, 20, 200), v(0, -110, 0), 2), new Wall(this.scene, v(20, 200, 200), v(110, 0, 0), 1), new Wall(this.scene, v(20, 200, 200), v(-110, 0, 0), 4)];
     };
     Test1.prototype.deactivateOtherWalls = function(wall) {
-      var obj, _i, _len, _ref, _results;
+      var obj, _i, _len, _ref, _ref2, _results;
       _ref = this.subObjects;
       _results = [];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         obj = _ref[_i];
-        _results.push(obj.popped && obj !== wall ? obj.animate(false) : void 0);
+        if (obj.popped && obj !== wall) {
+          if ((_ref2 = obj.animator) != null) {
+            _ref2.expire();
+          }
+          _results.push(obj.animate(false));
+        }
       }
       return _results;
     };
     Test1.prototype.activateWall = function(wall) {
-      var obj, _i, _len, _ref, _ref2;
-      _ref = this.subObjects;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        obj = _ref[_i];
-        if ((_ref2 = wall.animator) != null ? _ref2.animating : void 0) {
-          return;
-        }
-      }
       if (wall.order === this.activatedWalls.length) {
         this.activatedWalls.push(wall);
         if (!wall.popped) {
@@ -57,7 +54,7 @@
           this.activatedWalls = [];
           return setTimeout(__bind(function() {
             return this.deactivateOtherWalls();
-          }, this), 500);
+          }, this), 250);
         }, this), 500);
       }
     };
@@ -97,6 +94,10 @@
       Wall.__super__.constructor.call(this, this.scene, options);
       this.position.copy(position);
       this.popped = false;
+      this.targets = {
+        open: this.position.clone().addSelf(this.position.clone().normalize().multiplyScalar(75)),
+        closed: this.position.clone()
+      };
     }
     Wall.prototype.geometry = function() {
       return new THREE.Cube(this.size.x, this.size.y, this.size.z);
@@ -108,15 +109,16 @@
       return this.artifact.activateWall(this);
     };
     Wall.prototype.animate = function(outward) {
-      var curve, goal, start;
+      var duration, endPos, options, startPos;
       this.popped = outward;
-      start = this.position.clone();
-      goal = this.position.clone().addSelf(this.position.clone().normalize().multiplyScalar(outward ? 50 : -50));
-      curve = outward ? Animator.easeout : Animator.easein;
-      return this.animator = new Animator(0.5, {
-        curve: Animator.easeout
-      }, __bind(function(progress) {
-        return this.position.setBetween(start, goal, progress);
+      duration = outward ? 0.3 : 0.6 + Math.random() * 0.6;
+      startPos = this.position.clone();
+      endPos = outward ? this.targets.open : this.targets.closed;
+      options = {
+        curve: outward ? Animator.easeout : Animator.easein
+      };
+      return this.animator = new Animator(duration, options, __bind(function(progress) {
+        return this.position.setBetween(startPos, endPos, progress);
       }, this));
     };
     return Wall;

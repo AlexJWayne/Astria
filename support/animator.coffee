@@ -26,8 +26,12 @@ class @Animator
     if result > 1 then 1 else result
   
   update: ->
+    return if @expired
     @elapsed = Game.lastFrameAt - @start
     @callback @curve(@progress())
   
+  expire: ->
+    @expired   = yes
+    @animating = no
   
     

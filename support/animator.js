@@ -38,8 +38,15 @@
       }
     };
     Animator.prototype.update = function() {
+      if (this.expired) {
+        return;
+      }
       this.elapsed = Game.lastFrameAt - this.start;
       return this.callback(this.curve(this.progress()));
+    };
+    Animator.prototype.expire = function() {
+      this.expired = true;
+      return this.animating = false;
     };
     return Animator;
   })();
