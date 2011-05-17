@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+coffee -c *.coffee **/*.coffee **/**/*.coffee

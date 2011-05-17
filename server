@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'sinatra'
+
+require 'active_support'
+
+set :public, File.dirname(__FILE__)
+set :views,  File.dirname(__FILE__)
+
+conversions = {
+  :haml   => :html,
+  :coffee => :js,
+  :sass   => :css,
+}
+
+conversions.each do |src, dst|
+  get %r{/(.+)\.#{dst}} do
+    send src, params[:captures].first.to_sym
+  end
+end
+
+get '/' do
+  haml :index
+end
+
+# get '/docs' do
+#   `docco *.coffee **/*.coffee **/**/*.coffee`
+#   puts "Generated Docs!"
+#   redirect "/docs/#{ Dir.entries('docs').find { |file| file =~ /\.html/ } }"
+# end
