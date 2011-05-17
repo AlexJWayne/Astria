@@ -13,7 +13,7 @@ class @Artifact extends THREE.Object3D
     [new SubObject()]
   
   complete: ->
-    Game.next()
+    Game.camera.winSpin -> Game.next()
 
 
 # Artifacts are composed of Artifact.SubObject instances

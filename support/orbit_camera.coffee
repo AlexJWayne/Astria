@@ -54,7 +54,6 @@ class @OrbitCamera extends THREE.Camera
     @position.multiplyScalar Math.cosD(y)
     @position.y =  Math.sinD(y) * @distance
   
-  
   castMouse: (scene, event) ->
     ray = new THREE.Ray()
     
@@ -84,3 +83,14 @@ class @OrbitCamera extends THREE.Camera
     hits = ray.intersectScene(scene)
     hits.sort (a, b) ->
       if a.distance > b.distance then 1 else -1
+  
+  winSpin: (callback)->
+    camStart  = _.clone(@orbit)
+    camEnd = 
+      x: @orbit.x + 360
+      y: 30
+    
+    new Animator 3, (progress) =>
+      Game.camera.orbit.x = Math.between(camStart.x, camEnd.x, progress)
+      Game.camera.orbit.y = Math.between(camStart.y, camEnd.y, progress)
+      callback?() if progress == 1

@@ -31,7 +31,7 @@ class Artifact.Test1 extends Artifact
     
     # Win condition
     if @activatedWalls.length == 6
-      setTimeout _.bind(@complete, this), 500
+      setTimeout ( => @complete() ), 500
       
       
     
@@ -84,8 +84,7 @@ class Wall extends Artifact.SubObject
     options = curve: if outward then Animator.easeout else Animator.easein
     
     # Animate
-    @animator = new Animator(duration, options, (progress) =>
+    @animator = new Animator duration, (progress) =>
       @position.setBetween(startPos, endPos, progress)
-    )
     
     
