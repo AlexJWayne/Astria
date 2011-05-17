@@ -77,6 +77,7 @@ Game =
     
     @artifact = new @artifacts[nextIndex](@scene)
     @scene.addObject(@artifact)
+    @artifact.birthAnimation()
     
   
   # Return the timestamp for now, in seconds.

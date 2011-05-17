@@ -13,7 +13,24 @@ class @Artifact extends THREE.Object3D
     [new SubObject()]
   
   complete: ->
-    Game.camera.winSpin -> Game.next()
+    Game.camera.winSpin()
+    @exitAnimation -> Game.next()
+    this
+  
+  birthAnimation: (callback) ->
+    @scale.setLength(0)
+    _.defer =>
+      Game.camera.winSpin()
+      anim = new Animator 2, curve: Animator.easeout, (progress) =>
+        @scale.setBetween v(0,0,0), v(1,1,1), progress
+      anim.complete = callback
+  
+  exitAnimation: (callback) ->
+    setTimeout =>
+      anim = new Animator 2, curve: Animator.easein, (progress) =>
+        @scale.setBetween v(1,1,1), v(0,0,0), progress
+      anim.complete = -> Game.next()
+    , 2000
 
 
 # Artifacts are composed of Artifact.SubObject instances

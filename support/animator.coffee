@@ -21,6 +21,7 @@ class @Animator
   progress: ->
     result = @elapsed / @duration
     @expired = result >= 1
+    @complete?() if @animating && @expired # just expired
     @animating = !@expired
     
     if result > 1 then 1 else result
