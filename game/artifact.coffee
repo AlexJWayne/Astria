@@ -8,6 +8,9 @@ class @Artifact
   # Override to return an array of Artifact.SubObject instances that compose the artifact
   createSubObjects: ->
     [new SubObject(@scene)]
+  
+  complete: ->
+    Game.next()
 
 
 # Artifacts are composed of Artifact.SubObject instances

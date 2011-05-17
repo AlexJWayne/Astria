@@ -31,13 +31,7 @@ class Artifact.Test1 extends Artifact
     
     # Win condition
     if @activatedWalls.length == 6
-      setTimeout =>
-        alert 'A winner is you! Resetting...'
-        @activatedWalls = []
-        setTimeout =>
-          @deactivateOtherWalls()
-        , 250
-      , 500
+      setTimeout _.bind(@complete, this), 500
       
       
     

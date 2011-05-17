@@ -23,22 +23,28 @@ class @OrbitCamera extends THREE.Camera
     
     # Orbit horizontally, wrapping from 0 to 360
     @orbit.x += (event.clientX - @last.x) / window.innerWidth  * @sensitivity
-    @orbit.x -= 360 if @orbit.x > 360
-    @orbit.x += 360 if @orbit.x < 0
     @last.x = event.clientX
     
     # Orbit vertically, from -90 to 90 without wrapping
     @orbit.y += (event.clientY - @last.y) / window.innerHeight * @sensitivity
-    @orbit.y =  90 if @orbit.y >  90
-    @orbit.y = -90 if @orbit.y < -90
     @last.y  = event.clientY
   
   # Set the position of the camera according to the current X and Y orbit values
   updateOrbit: ->
+    
+    # Wrap horizontally
+    @orbit.x -= 360 if @orbit.x > 360
+    @orbit.x += 360 if @orbit.x < 0
+    
+    # Stop at top and bottom
+    @orbit.y =  90 if @orbit.y >  90
+    @orbit.y = -90 if @orbit.y < -90
+    
+    # Snag some xy as local vars
     { x, y } = @orbit
     
     # Reset position
-    @position.multiplyScalar(0)
+    @position.setLength(0)
     
     # Horizontal
     @position.x = -Math.sinD(x) * @distance

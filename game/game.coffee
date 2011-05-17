@@ -37,8 +37,14 @@ Game =
     # Setup input
     @bindMouseEvents()
     
+    # Setup level progressions
+    @artifacts = [
+      Artifact.Test1
+      Artifact.Test2
+    ]
+    
     # Create the game level
-    @artifact = new Artifact.Test1(@scene)
+    @artifact = new @artifacts[0](@scene)
     
     # Go!
     @animate()
@@ -59,6 +65,15 @@ Game =
     
     document.onmouseup = =>
       @cameraOrbiting = off      
+  
+  next: ->
+    nextIndex = _.indexOf(@artifacts, @artifact.constructor) + 1
+    nextIndex = 0 if nextIndex >= @artifacts.length
+    
+    for subObj in @artifact.subObjects
+      @scene.removeChildRecurse(subObj)
+    
+    @artifact = new @artifacts[nextIndex](@scene)
   
   # Return the timestamp for now, in seconds.
   now: -> new Date().getTime() / 1000
