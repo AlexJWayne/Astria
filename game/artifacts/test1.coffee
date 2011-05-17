@@ -1,16 +1,16 @@
 class Artifact.Test1 extends Artifact
-  constructor: (args...) ->
-    super(args...)
+  constructor: ->
+    super
     @activatedWalls = []
   
   createSubObjects: ->
     [
-      new Wall @scene, v(200, 200, 20), v(0, 0,  110), 0
-      new Wall @scene, v(200, 200, 20), v(0, 0, -110), 3
-      new Wall @scene, v(200, 20, 200), v(0,  110, 0), 5
-      new Wall @scene, v(200, 20, 200), v(0, -110, 0), 2
-      new Wall @scene, v(20, 200, 200), v( 110, 0, 0), 1
-      new Wall @scene, v(20, 200, 200), v(-110, 0, 0), 4
+      new Wall v(200, 200, 20), v(0, 0,  110), 0
+      new Wall v(200, 200, 20), v(0, 0, -110), 3
+      new Wall v(200, 20, 200), v(0,  110, 0), 5
+      new Wall v(200, 20, 200), v(0, -110, 0), 2
+      new Wall v(20, 200, 200), v( 110, 0, 0), 1
+      new Wall v(20, 200, 200), v(-110, 0, 0), 4
     ]
   
   deactivateOtherWalls: (wall) ->
@@ -50,7 +50,7 @@ class Wall extends Artifact.SubObject
     new THREE.MeshLambertMaterial(color: 0xffffff, shading: THREE.FlatShading)
   ]
   
-  constructor: (@scene, @size, position, @order, options = {}) ->
+  constructor: (@size, position, @order, options = {}) ->
     super @scene, options
     @position.copy(position)
     @popped = no

@@ -44,7 +44,7 @@ Game =
     ]
     
     # Create the game level
-    @artifact = new @artifacts[0](@scene)
+    @next()
     
     # Go!
     @animate()
@@ -67,13 +67,17 @@ Game =
       @cameraOrbiting = off      
   
   next: ->
-    nextIndex = _.indexOf(@artifacts, @artifact.constructor) + 1
-    nextIndex = 0 if nextIndex >= @artifacts.length
-    
-    for subObj in @artifact.subObjects
-      @scene.removeChildRecurse(subObj)
+    if @artifact
+      nextIndex = _.indexOf(@artifacts, @artifact.constructor) + 1
+      nextIndex = 0 if nextIndex >= @artifacts.length      
+      @scene.removeChildRecurse(@artifact)
+      
+    else
+      nextIndex = 0
     
     @artifact = new @artifacts[nextIndex](@scene)
+    @scene.addObject(@artifact)
+    
   
   # Return the timestamp for now, in seconds.
   now: -> new Date().getTime() / 1000
