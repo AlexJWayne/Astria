@@ -41,6 +41,7 @@ Game =
     @artifacts = [
       Artifact.Test1
       Artifact.Test2
+      Artifact.Test3
     ]
     
     # Create the game level
