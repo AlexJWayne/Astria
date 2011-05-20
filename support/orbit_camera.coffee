@@ -10,10 +10,14 @@ class @OrbitCamera extends THREE.Camera
   
     # x and y angle of the camera on creation
     startingOrbit: new THREE.Vector2(45, 30)
+    
+    # Debug flags
+    debug:
+      showClicks: false
   
   # Create a new camera
-  constructor: (args...) ->
-    super args...    
+  constructor: ->
+    super
     { @sensitivity, @distance } = defaults
     @orbit    = defaults.startingOrbit.clone()
     @last     = defaults.startingOrbit.clone()
@@ -54,36 +58,46 @@ class @OrbitCamera extends THREE.Camera
     @position.multiplyScalar Math.cosD(y)
     @position.y =  Math.sinD(y) * @distance
   
-  castMouse: (scene, event) ->
-    ray = new THREE.Ray()
-    
-    # Set the ray origin to screen space coordinates
-    ray.origin.set(
+  # Turn screen x and y into a point in space along a plane perpendicular camera
+  # slicing through the origin.
+  screenToWorldPosition: (x, y) ->
+    # Create an vector for the mouse in screen space
+    mousePos = v(
       event.clientX / window.innerWidth * 2 - 1
       -(event.clientY / window.innerHeight * 2 - 1)
       0
     )
     
-    # Transform ray origin to world space
-    matrix = @matrixWorld.clone();
+    # Transform screen space y the camera matrix
+    matrix = @matrixWorld.clone()
     matrix.multiplySelf THREE.Matrix4.makeInvert(@projectionMatrix)
-    matrix.multiplyVector3(ray.origin)
+    matrix.multiplyVector3(mousePos)
     
-    # Tranform the ray direction to world space
-    ray.direction = ray.origin.clone().subSelf(@position)
+    # Offset by the camera position
+    mousePos.subSelf(@position)
+  
+  # Turn screen x and y into a ray from the camera that can intersect the scene
+  screenToRay: (x, y) ->
+    new THREE.Ray @position.clone(), @screenToWorldPosition(x, y)
+  
+  # Return an array of objects that were hit by a ray from the camera toward
+  # the mouse click location
+  castMouse: (scene, event) ->
+    ray = @screenToRay(event.clientX, event.clientY)
     
-    # # Sticks an object in the scene at the mouse click in order to verify accuracy
-    # do =>
-    #   g = new THREE.Cube(5,5,5)
-    #   m = new THREE.MeshBasicMaterial(color: 0xff00ff)
-    #   o = new THREE.Mesh(g, m)
-    #   o.position.copy ray.origin.clone().addSelf(ray.direction.clone().normalize().multiplyScalar @position.length())
-    #   scene.addObject(o)
+    # Sticks an object in the scene at the mouse click in order to verify accuracy
+    if defaults.debug.showClicks
+      g = new THREE.Cube(5,5,5)
+      m = new THREE.MeshBasicMaterial(color: 0xff00ff)
+      o = new THREE.Mesh(g, m)
+      o.position.copy ray.origin.clone().addSelf(ray.direction.clone().normalize().multiplyScalar @position.length())
+      scene.addObject(o)
 
     hits = ray.intersectScene(scene)
     hits.sort (a, b) ->
       if a.distance > b.distance then 1 else -1
   
+  # Spin for the win
   winSpin: (callback)->
     camStart  = _.clone(@orbit)
     camEnd = 
