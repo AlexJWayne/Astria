@@ -42,7 +42,6 @@ Game =
     @artifacts = [
       Artifact.Test1
       Artifact.Test2
-      Artifact.Test3
     ]
     
     # Create the game level
@@ -54,19 +53,38 @@ Game =
   # Bind mouse events
   bindMouseEvents: ->
     document.onmousemove = (event) =>
-      @camera.move(event) if @cameraOrbiting
+      
+      # Camera movement
+      @camera.move event if @cameraOrbiting
+      
+      # Object dragging
+      if @draggedObj?.onDrag?
+        currentDragPosition = @camera.screenToWorldPosition event.clientX, event.clientY
+        @draggedObj.onDrag currentDragPosition.clone().subSelf(@lastDragPosition)
+        @lastDragPosition = currentDragPosition
     
     document.onmousedown = (event) =>
       if (hits = @camera.castMouse(@scene, event)).length > 0
-        hits[0].object?.onTouch?()
-    
+        if (obj = hits[0].object)
+          
+          # Touch the object
+          obj.onTouch?()
+          
+          # Start Draggin the object
+          if obj.onDrag
+            @lastDragPosition = @camera.screenToWorldPosition event.clientX, event.clientY
+            @draggedObj = obj
+      
+      # Drag camera around
       else
         @cameraOrbiting = on
         @camera.last.x = event.clientX
         @camera.last.y = event.clientY
     
+    # Cancel orbiting and objectdragging
     document.onmouseup = =>
-      @cameraOrbiting = off      
+      @cameraOrbiting = off
+      @draggedObj = null
   
   next: ->
     if @artifact

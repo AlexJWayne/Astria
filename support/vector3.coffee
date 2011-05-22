@@ -29,3 +29,6 @@ THREE.Vector3::setBetween = (a, b, progress = 0.5) ->
     Math.between(a.y, b.y, progress)
     Math.between(a.z, b.z, progress)
   )
+
+THREE.Vector3::log = ->
+  console.log @x, @y, @z

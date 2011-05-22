@@ -13,7 +13,7 @@ class @OrbitCamera extends THREE.Camera
     
     # Debug flags
     debug:
-      showClicks: false
+      showClicks: off
   
   # Create a new camera
   constructor: ->
@@ -61,6 +61,10 @@ class @OrbitCamera extends THREE.Camera
   # Turn screen x and y into a point in space along a plane perpendicular camera
   # slicing through the origin.
   screenToWorldPosition: (x, y) ->
+    { origin, direction } = @screenToRay x, y
+    origin.addSelf direction.setLength(@distance)
+  
+  screenToDirection: (x, y) ->
     # Create an vector for the mouse in screen space
     mousePos = v(
       event.clientX / window.innerWidth * 2 - 1
@@ -78,7 +82,7 @@ class @OrbitCamera extends THREE.Camera
   
   # Turn screen x and y into a ray from the camera that can intersect the scene
   screenToRay: (x, y) ->
-    new THREE.Ray @position.clone(), @screenToWorldPosition(x, y)
+    new THREE.Ray @position.clone(), @screenToDirection(x, y)
   
   # Return an array of objects that were hit by a ray from the camera toward
   # the mouse click location
@@ -90,9 +94,10 @@ class @OrbitCamera extends THREE.Camera
       g = new THREE.Cube(5,5,5)
       m = new THREE.MeshBasicMaterial(color: 0xff00ff)
       o = new THREE.Mesh(g, m)
-      o.position.copy ray.origin.clone().addSelf(ray.direction.clone().normalize().multiplyScalar @position.length())
+      o.position.copy @screenToWorldPosition(event.clientX, event.clientY)
       scene.addObject(o)
-
+    
+    # Throw the ray at the scene and see what sticks
     hits = ray.intersectScene(scene)
     hits.sort (a, b) ->
       if a.distance > b.distance then 1 else -1
