@@ -19,8 +19,6 @@ head.js(
   'game/artifacts/test1.js'
   'game/artifacts/test2.js'
   
-  # All loaded callback
-  ->
+  -> # All loaded callback
     Game.init()
-    Game.animate()
 )
